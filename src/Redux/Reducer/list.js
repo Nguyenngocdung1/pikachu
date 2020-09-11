@@ -23,142 +23,126 @@ import icon21 from '../../icon/21.png'
 
 const init = [
     {
-        id: 0,
-        status: false,
+        id: '0',
         img: icon1,
         check: 0
     },
     {
-        id: 1,
-        status: false,
+        id: '1',
         img: icon2,
         check: 0
     },
     {
-        id: 2,
-        status: false,
+        id: '2',
         img: icon3,
         check: 0
     },
     {
-        id: 3,
-        status: false,
+        id: '3',
         img: icon4,
         check: 0
     },
     {
-        id: 4,
-        status: false,
+        id: '4',
         img: icon5,
         check: 0
     },
     {
-        id: 5,
-        status: false,
+        id: '5',
         img: icon6,
         check: 0
     },
     {
-        id: 6,
-        status: false,
+        id: '6',
         img: icon7,
         check: 0
     },
     {
-        id: 7,
-        status: false,
+        id: '7',
         img: icon8,
         check: 0
     },
     {
-        id: 8,
-        status: false,
+        id: '8',
         img: icon9,
         check: 0
     },
     {
-        id: 9,
-        status: false,
+        id: '9',
         img: icon10,
         check: 0
     },
     {
-        id: 10,
-        status: false,
+        id: '10',
         img: icon11,
         check: 0
     },
     {
-        id: 11,
-        status: false,
+        id: '11',
         img: icon12,
         check: 0
     },
     {
-        id: 12,
-        status: false,
+        id: '12',
         img: icon13,
         check: 0
     },
     {
-        id: 13,
-        status: false,
+        id: '13',
         img: icon14,
         check: 0
     },
     {
-        id: 14,
-        status: false,
+        id: '14',
         img: icon15,
         check: 0
     },
     {
-        id: 15,
-        status: false,
+        id: '15',
         img: icon16,
         check: 0
     },
     {
-        id: 16,
-        status: false,
+        id: '16',
         img: icon17,
         check: 0
     },
     {
-        id: 17,
-        status: false,
+        id: '17',
         img: icon18,
         check: 0
     },
     {
-        id: 18,
-        status: false,
+        id: '18',
         img: icon19,
         check: 0
     },
     {
-        id: 19,
-        status: false,
+        id: '19',
         img: icon20,
         check: 0
     },
     {
-        id: 20,
-        status: false,
+        id: '20',
         img: icon21,
         check: 0
     },
 ];
 
-const cols = 21;
-const rows = 10;
-const limit = 10;
+const cols = 12;
+const rows = 7;
+const limit = 4;
 
 const setState = (initialState) => {
     for(let i = 0; i < cols; i++){
         const random = Math.floor(Math.random() * init.length);
         const item = init[random];
-        initialState.push(item);
+        initialState.push({
+            id: item.id,
+            status: false,
+            img: item.img,
+            check: item.check
+        });
         item.check++;
         if(item.check === limit){
             init.splice(random, 1);
@@ -180,6 +164,18 @@ const tasks = (state = test, action) => {
     switch (action.type){
         case types.viewList:
             return state;
+        case types.changeStatus:
+            state[action.index][action.indexitem].status = !state[action.index][action.indexitem].status;
+            return [...state];
+        case types.checkTwoButton:
+            return [...state];
+        case types.changStatusTrue:
+            if(state[action.checkObj[0].index][action.checkObj[0].indexItem] !== state[action.checkObj[1].index][action.checkObj[1].indexItem]) {
+                for (let i = 0; i < action.checkObj.length; i++) {
+                    state[action.checkObj[i].index][action.checkObj[i].indexItem].status = true;
+                }
+            }
+            return [...state];
         default: return state;
     }
 }
