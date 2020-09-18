@@ -3,12 +3,10 @@ import { connect } from 'react-redux';
 import * as action from '../Redux/Actions/index'
 
 class Content extends Component {
-    changeStatusItem = (item, index, indexitem) => {
+    changeStatusItem = (list, item, index, indexitem) => {
         const {checkButtonClick } = this.props;
-        checkButtonClick(item, index, indexitem);
+        checkButtonClick(list, item, index, indexitem);
     }
-
-
 
     render() {
         const {list} = this.props;
@@ -20,8 +18,8 @@ class Content extends Component {
                         {arr.map((item, indexitem) => {
                             return(
                                 <div key={indexitem} style={item.status === false ? { display: 'inline-block'}: {display: 'inline-block', opacity: 0}}>
-                                    <div style={{width: '60px', height: '60px'}}>
-                                        <button onClick={() => this.changeStatusItem(item, index, indexitem)} disabled={item.status}>
+                                    <div style={{width: '62px', height: '62px'}}>
+                                        <button onClick={() => this.changeStatusItem(list ,item, index, indexitem)} disabled={item.status}>
                                             <img style={{width: '45px', height: '50px'}} src={item.img} alt='error'/>
                                         </button>
                                     </div>
@@ -30,7 +28,6 @@ class Content extends Component {
                         </div>)
                 })}
             </div>
-
         )
     }
 }
@@ -44,7 +41,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         newState: (index, indexitem) => dispatch(action.changeStatusIcon(index, indexitem)),
-        checkButtonClick: (item, index, indexitem) => dispatch(action.checkButton(item, index, indexitem)),
+        checkButtonClick: (list, item, index, indexitem) => dispatch(action.checkButton(list, item, index, indexitem)),
     };
 }
 

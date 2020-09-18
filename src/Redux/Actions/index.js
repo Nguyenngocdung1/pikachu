@@ -8,9 +8,10 @@ export const changeStatusIcon = (index, indexitem) => {
     };
 }
 
-export const checkButton = (item, index, indexitem) => {
+export const checkButton = (list, item, index, indexitem) => {
     return {
         type: types.checkTwoButton,
+        list,
         item,
         index,
         indexitem

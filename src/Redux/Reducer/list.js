@@ -134,17 +134,17 @@ const rows = 7;
 const limit = 4;
 
 const setState = (initialState) => {
-    for(let i = 0; i < cols; i++){
+    for(let i = 0; i < cols; i++) {
         const random = Math.floor(Math.random() * init.length);
         const item = init[random];
-        initialState.push({
+        initialState.push ({
             id: item.id,
             status: false,
             img: item.img,
             check: item.check
         });
         item.check++;
-        if(item.check === limit){
+        if(item.check === limit) {
             init.splice(random, 1);
         }
     }
@@ -158,9 +158,12 @@ const setStateTwo = (initialStateTwo) => {
     }
     return initialStateTwo;
 }
-const test = setStateTwo([]);
 
-const tasks = (state = test, action) => {
+const newState = setStateTwo([]);
+let mount = 0;
+console.log(mount);
+
+const tasks = (state = newState , action) => {
     switch (action.type){
         case types.viewList:
             return state;
@@ -170,11 +173,8 @@ const tasks = (state = test, action) => {
         case types.checkTwoButton:
             return [...state];
         case types.changStatusTrue:
-            if(state[action.checkObj[0].index][action.checkObj[0].indexItem] !== state[action.checkObj[1].index][action.checkObj[1].indexItem]) {
-                for (let i = 0; i < action.checkObj.length; i++) {
-                    state[action.checkObj[i].index][action.checkObj[i].indexItem].status = true;
-                }
-            }
+            state[action.checkObj[0].index][action.checkObj[0].indexItem].status = true;
+            state[action.checkObj[1].index][action.checkObj[1].indexItem].status = true;
             return [...state];
         default: return state;
     }
