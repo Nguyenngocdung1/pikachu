@@ -3,12 +3,48 @@ import * as types from './../Redux/Constant/types'
 
 let checkRequest = 0;
 let checkObj = [];
+let checkHandle = [];
 
 function* watcherClick() {
     while(true) {
         const action = yield take(types.checkTwoButton);
         yield fork(getTwoClick, action);
     }
+}
+
+// return true la hết đường đi, thuc hien dao mang > va nguoc lai
+const addSameId = (list) => {
+    let flag = true; //Khoi tao mac dinh la het duong di ::!!
+    for (let i = 0; i < 21; i++) {
+        for (let j = 0; j < 7; j++) {
+            for (let k = 0; k < 12; k++) {
+                if (list[j][k].id === i && list[j][k].status === false) {
+                    list[j][k].index = j;
+                    list[j][k].indexItem = k;
+                    checkHandle.push(list[j][k]);
+                }
+            }
+        }
+        if(!checkEndRoad(list)) {
+            flag = false; // còn đường đi
+            break;
+        }
+        checkHandle = [];
+    }
+    checkHandle = [];
+    return flag; // return het đường đi
+}
+
+//return true la het duong di voi object chua cac con co cung id va nguoc lai :::))
+const checkEndRoad = (list) => {
+    for(let i = 0; i < checkHandle.length; i++){
+        for(let j = i+1; j < checkHandle.length; j++){
+            if(checkTwoPoint2(list, checkHandle[i].index, checkHandle[j].index, checkHandle[i].indexItem, checkHandle[j].indexItem, checkHandle[i], checkHandle[j])){
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 const checkLineX = (list, x1, x2, y1, y2) => {
@@ -37,12 +73,9 @@ const checkLineY = (list, x1, x2, y1, y2) => {
     }
 }
 
-const checkRectX = (list) => {
-    let pMin = checkObj[0];
-    let pMax = checkObj[1];
+const checkRectX = (list, pMin, pMax) => {
     if(pMin.indexItem > pMax.indexItem) {
-        pMin = checkObj[1];
-        pMax = checkObj[0];
+        [pMin, pMax] = [pMax, pMin];
     }
     for(let y = pMin.indexItem + 1; y < pMax.indexItem; y++) {
         if (
@@ -56,13 +89,9 @@ const checkRectX = (list) => {
     return false;
 }
 
-
-const checkRectY = (list) => {
-    let pMin = checkObj[0];
-    let pMax = checkObj[1];
+const checkRectY = (list, pMin, pMax) => {
     if(pMin.index > pMax.index) {
-        pMin = checkObj[1];
-        pMax = checkObj[0];
+        [pMin, pMax] = [pMax, pMin];
     }
     for(let x = pMin.index + 1; x < pMax.index; x++) {
         if (
@@ -76,12 +105,9 @@ const checkRectY = (list) => {
     return false;
 }
 
-const checkMoreX = (list, type) => {
-    let pMin = checkObj[0];
-    let pMax = checkObj[1];
+const checkMoreX = (list, type, pMin, pMax) => {
     if(pMin.indexItem > pMax.indexItem) {
-        pMin = checkObj[1];
-        pMax = checkObj[0];
+        [pMin, pMax] = [pMax, pMin];
     }
     let y = pMax.indexItem;
     let row = pMin.index;
@@ -103,12 +129,9 @@ const checkMoreX = (list, type) => {
     return false;
 }
 
-const checkMoreY = (list, type) => {
-    let pMin = checkObj[0];
-    let pMax = checkObj[1];
+const checkMoreY = (list, type, pMin, pMax) => {
     if(pMin.index > pMax.index) {
-        pMin = checkObj[1];
-        pMax = checkObj[0];
+        [pMin, pMax] = [pMax, pMin];
     }
     let x = pMax.index;
     let col = pMin.indexItem;
@@ -118,11 +141,10 @@ const checkMoreY = (list, type) => {
     }
     if(checkLineY(list, pMin.index, pMax.index, col, col)) {
         while(list[x][pMin.indexItem].status && list[x][pMax.indexItem].status) {
-            if(checkLineY(list, x, x, pMin.indexItem, pMax.indexItem)) {
+            if(checkLineX(list, x, x, pMin.indexItem, pMax.indexItem)) {
                 return true;
             }
             x += type;
-            debugger;
             if (!list[x]) {
                 return true;
             }
@@ -131,22 +153,47 @@ const checkMoreY = (list, type) => {
     return false;
 }
 
+const checkTwoPoint = (list, x1, x2, y1, y2, pMin, pMax) => {
+    list[x1][y1].status = true;
+    list[x2][y2].status = true;
+    return checkLineX(list, x1, x2, y1, y2) ||
+        checkLineY(list, x1, x2, y1, y2) ||
+        checkRectX(list, pMin, pMax) ||
+        checkRectY(list, pMin, pMax) ||
+        checkMoreX(list, 1, pMin, pMax) ||
+        checkMoreX(list, -1, pMin, pMax) ||
+        checkMoreY(list, 1, pMin, pMax) ||
+        checkMoreY(list, -1, pMin, pMax);
+}
+
+const checkTwoPoint2 = (list, x1, x2, y1, y2, pMin, pMax) => {
+    list[x1][y1].status = true;
+    list[x2][y2].status = true;
+    if (checkLineX(list, x1, x2, y1, y2) ||
+        checkLineY(list, x1, x2, y1, y2) ||
+        checkRectX(list, pMin, pMax) ||
+        checkRectY(list, pMin, pMax) ||
+        checkMoreX(list, 1, pMin, pMax) ||
+        checkMoreX(list, -1, pMin, pMax) ||
+        checkMoreY(list, 1, pMin, pMax) ||
+        checkMoreY(list, -1, pMin, pMax)) {
+        return true;
+    } else {
+        list[x1][y1].status = false;
+        list[x2][y2].status = false;
+        return false;
+    }
+}
+
 function* handleItem(list) {
     if(checkObj[0].id === checkObj[1].id && list[checkObj[0].index][checkObj[0].indexItem] !== list[checkObj[1].index][checkObj[1].indexItem]) {
         const x1 = checkObj[0].index;
         const x2 = checkObj[1].index;
         const y1 = checkObj[0].indexItem;
         const y2 = checkObj[1].indexItem;
-        const newList = JSON.parse(JSON.stringify(list));
-        newList[x1][y1].status = true;
-        newList[x2][y2].status = true;
-        if(checkLineX(newList, x1, x2, y1, y2) ||
-            checkLineY(newList, x1, x2, y1, y2) ||
-            checkRectX(newList) || checkRectY(newList) ||
-            checkMoreX(newList, 1) ||
-            checkMoreX(newList, -1) ||
-            checkMoreY(newList, 1) ||
-            checkMoreY(newList, -1)) {
+        const pMin = checkObj[0];
+        const pMax = checkObj[1];
+        if(checkTwoPoint(list, x1, x2, y1, y2, pMin, pMax)) {
             yield put({type: types.changStatusTrue, checkObj});
         }
     }
@@ -156,14 +203,19 @@ function* handleItem(list) {
 
 function* getTwoClick(action) {
     const {item, list} = action;
-    console.log(item)
     checkRequest++;
     item.index = action.index;
     item.indexItem = action.indexitem;
     checkObj.push(action.item);
+    const newList1 = JSON.parse(JSON.stringify(list));
+    if(addSameId(newList1)){
+        console.log("Hết con để ăn roài chuyển hình thôi :D");
+        yield put({type: types.handleArr})
+    }
+    const newList = JSON.parse(JSON.stringify(list));
     if(checkRequest === 2) {
         try {
-            yield call(() => handleItem(list));
+            yield call(() => handleItem(newList));
         } catch(error) {
             console.log(error);
         }

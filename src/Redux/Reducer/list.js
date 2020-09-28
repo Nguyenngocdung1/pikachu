@@ -23,107 +23,107 @@ import icon21 from '../../icon/21.png'
 
 const init = [
     {
-        id: '0',
+        id: 0,
         img: icon1,
         check: 0
     },
     {
-        id: '1',
+        id: 1,
         img: icon2,
         check: 0
     },
     {
-        id: '2',
+        id: 2,
         img: icon3,
         check: 0
     },
     {
-        id: '3',
+        id: 3,
         img: icon4,
         check: 0
     },
     {
-        id: '4',
+        id: 4,
         img: icon5,
         check: 0
     },
     {
-        id: '5',
+        id: 5,
         img: icon6,
         check: 0
     },
     {
-        id: '6',
+        id: 6,
         img: icon7,
         check: 0
     },
     {
-        id: '7',
+        id: 7,
         img: icon8,
         check: 0
     },
     {
-        id: '8',
+        id: 8,
         img: icon9,
         check: 0
     },
     {
-        id: '9',
+        id: 9,
         img: icon10,
         check: 0
     },
     {
-        id: '10',
+        id: 10,
         img: icon11,
         check: 0
     },
     {
-        id: '11',
+        id: 11,
         img: icon12,
         check: 0
     },
     {
-        id: '12',
+        id: 12,
         img: icon13,
         check: 0
     },
     {
-        id: '13',
+        id: 13,
         img: icon14,
         check: 0
     },
     {
-        id: '14',
+        id: 14,
         img: icon15,
         check: 0
     },
     {
-        id: '15',
+        id: 15,
         img: icon16,
         check: 0
     },
     {
-        id: '16',
+        id: 16,
         img: icon17,
         check: 0
     },
     {
-        id: '17',
+        id: 17,
         img: icon18,
         check: 0
     },
     {
-        id: '18',
+        id: 18,
         img: icon19,
         check: 0
     },
     {
-        id: '19',
+        id: 19,
         img: icon20,
         check: 0
     },
     {
-        id: '20',
+        id: 20,
         img: icon21,
         check: 0
     },
@@ -175,6 +175,40 @@ const tasks = (state = newState , action) => {
         case types.changStatusTrue:
             state[action.checkObj[0].index][action.checkObj[0].indexItem].status = true;
             state[action.checkObj[1].index][action.checkObj[1].indexItem].status = true;
+            return [...state];
+        case types.checkPointAdd:
+            debugger;
+            for (let i = 0; i < 7 ; i++) {
+                for (let j = 0; j < 12; j++) {
+                    if (state[i][j].status === true) {
+                        action.point ++;
+                    }
+                }
+            }
+            debugger;
+            return [...state];
+        case types.handleArr:
+            const newStateSwap = [];
+            for (let i = 0; i < 7; i++) {
+                for (let j = 0; j < 12; j++) {
+                    if(state[i][j].status === false) {
+                        newStateSwap.push(state[i][j]);
+                    }
+                }
+            }
+            for (let i = newStateSwap.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newStateSwap[i], newStateSwap[j]] = [newStateSwap[j], newStateSwap[i]];
+            }
+            console.log(newStateSwap);
+            for (let i = 0; i < 7; i++) {
+                for (let j = 0; j < 12; j++) {
+                    if (state[i][j].status === false) {
+                        state[i][j] = newStateSwap[0];
+                        newStateSwap.splice(0, 1);
+                    }
+                }
+            }
             return [...state];
         default: return state;
     }

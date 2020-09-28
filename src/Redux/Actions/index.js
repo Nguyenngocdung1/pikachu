@@ -8,12 +8,27 @@ export const changeStatusIcon = (index, indexitem) => {
     };
 }
 
-export const checkButton = (list, item, index, indexitem) => {
+export const checkButton = (arr, list, item, index, indexitem) => {
     return {
         type: types.checkTwoButton,
+        arr,
         list,
         item,
         index,
         indexitem
     };
+}
+
+export const addPoint = (point) => {
+    return {
+        type: types.checkPointAdd,
+        point
+    }
+}
+
+export const swapArr = (list) => {
+    return{
+        type: types.handleArr,
+        list,
+    }
 }
