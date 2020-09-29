@@ -176,17 +176,6 @@ const tasks = (state = newState , action) => {
             state[action.checkObj[0].index][action.checkObj[0].indexItem].status = true;
             state[action.checkObj[1].index][action.checkObj[1].indexItem].status = true;
             return [...state];
-        case types.checkPointAdd:
-            debugger;
-            for (let i = 0; i < 7 ; i++) {
-                for (let j = 0; j < 12; j++) {
-                    if (state[i][j].status === true) {
-                        action.point ++;
-                    }
-                }
-            }
-            debugger;
-            return [...state];
         case types.handleArr:
             const newStateSwap = [];
             for (let i = 0; i < 7; i++) {
@@ -200,7 +189,6 @@ const tasks = (state = newState , action) => {
                 const j = Math.floor(Math.random() * (i + 1));
                 [newStateSwap[i], newStateSwap[j]] = [newStateSwap[j], newStateSwap[i]];
             }
-            console.log(newStateSwap);
             for (let i = 0; i < 7; i++) {
                 for (let j = 0; j < 12; j++) {
                     if (state[i][j].status === false) {

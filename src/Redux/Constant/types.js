@@ -6,6 +6,4 @@ export const checkTwoButton = 'CHECK_TWO_BUTTON'
 
 export const changStatusTrue = 'CHANGE_STATUS_TRUE'
 
-export const checkPointAdd = 'CHECK_POINT_ADD'
-
 export const handleArr = 'HANDLE_ARR'

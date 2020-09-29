@@ -15,15 +15,8 @@ export const checkButton = (arr, list, item, index, indexitem) => {
         list,
         item,
         index,
-        indexitem
+        indexitem,
     };
-}
-
-export const addPoint = (point) => {
-    return {
-        type: types.checkPointAdd,
-        point
-    }
 }
 
 export const swapArr = (list) => {

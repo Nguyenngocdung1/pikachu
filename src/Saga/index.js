@@ -195,6 +195,7 @@ function* handleItem(list) {
         const pMax = checkObj[1];
         if(checkTwoPoint(list, x1, x2, y1, y2, pMin, pMax)) {
             yield put({type: types.changStatusTrue, checkObj});
+            // yield put({type: types.checkPointAdd, point});
         }
     }
     checkObj = [];
@@ -202,7 +203,7 @@ function* handleItem(list) {
 }
 
 function* getTwoClick(action) {
-    const {item, list} = action;
+    let {item, list, point} = action;
     checkRequest++;
     item.index = action.index;
     item.indexItem = action.indexitem;
@@ -215,7 +216,7 @@ function* getTwoClick(action) {
     const newList = JSON.parse(JSON.stringify(list));
     if(checkRequest === 2) {
         try {
-            yield call(() => handleItem(newList));
+            yield call(() => handleItem(newList, point));
         } catch(error) {
             console.log(error);
         }
