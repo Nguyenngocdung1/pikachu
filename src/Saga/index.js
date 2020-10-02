@@ -55,6 +55,9 @@ const checkLineX = (list, x1, x2, y1, y2) => {
             if(!list[x1][i].status) {
                 return false;
             }
+            if(list[x1][i].status) {
+                list[x1][i].road = true;
+            }
         }
         return true;
     }

@@ -141,7 +141,8 @@ const setState = (initialState) => {
             id: item.id,
             status: false,
             img: item.img,
-            check: item.check
+            check: item.check,
+            road: false,
         });
         item.check++;
         if(item.check === limit) {

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import * as action from '../Redux/Actions/index'
 import './../App.css';
 import logo from "../icon/logo.png";
+import image from "../icon/images.jpeg";
 
 class Content extends Component {
     constructor(props) {
@@ -37,12 +38,16 @@ class Content extends Component {
         }
     }
 
-    handleTime = () => {
+    handleTime = (checkReset) => {
+        this.setState({
+            checkReset: checkReset,
+        })
         setInterval(() => {
             this.setState((prevState) => ( {
                 time: prevState.time - 1,
             }))
-        },1000);
+        },10);
+
     }
 
     changeStatusItem = (arr, list, item, index, indexitem) => {
@@ -53,41 +58,49 @@ class Content extends Component {
 
     render() {
         const {list} = this.props;
-        const {checkHandler, time, checkReset} = this.state;
+        let {checkHandler, time, checkReset} = this.state;
+        if(time < 0)
+            return (
+                <div style={{textAlign: "center", display: "block"}}>
+                    <p>HẾT GIỜ !!!</p>
+                    <img src={image} alt="#"/>
+                    <div>
+                        <button> CHƠI LẠI </button>
+                    </div>
+                </div>
+            )
         return (
             <div style={{display: 'block', marginLeft: "120px"}}>
                 <div style={{textAlign: 'center'}}><img style={{border: '1 solid'}} src={logo} alt="#"/></div>
                 <div className="content" style={{textAlign:'center'}}>
                     <div style={{ marginRight: "10px", fontSize: '30px', color: '#EE0000', fontFamily: 'Debby'}}>
                         <div style={{textAlign: 'left', marginLeft: '500px', marginBottom: '30px'}}>
-                            <button style={{color: '#CCFF00', backgroundColor: 'crimson', fontFamily: "Courier New", margin: ' 10px'}} onClick={this.handleTime}>START <div>GAME</div></button>
+                            <button style={{color: '#CCFF00', backgroundColor: 'crimson', fontFamily: "Courier New", margin: ' 10px'}}
+                                    onClick={() => this.handleTime('on')}>START <div>GAME</div></button>
                             <button
-                                style={{color: '#CCFF00', backgroundColor: 'crimson', fontFamily: "Courier New", margin: ' 10px'}} onClick={() => this.checkHandleArrSwap(list)}>LÀM MỚI HÌNH
-                                <div style={{}}>{checkHandler}</div>
+                                style={{color: '#CCFF00', backgroundColor: 'crimson', fontFamily: "Courier New", margin: ' 10px'}}
+                                onClick={() => this.checkHandleArrSwap(list)}>LÀM MỚI HÌNH
+                                <div>{checkHandler}</div>
                             </button>
                             <button style={{color: '#CCFF00', backgroundColor: 'crimson', fontFamily: "Courier New", margin: ' 10px'}}
                                     onClick={() => this.resetGame('on')}
                             >RESET <div>GAME</div></button>
                         </div>
-                    </div>
-                    <div>
-                    {list.map((arr, index) => {
-                        return (
-                            <div key={index} className="row">
-                            {arr.map((item, indexitem) => {
-                                if(checkReset === 'on'){
-                                    item.status = false;
-                                }
-                                return(
-                                    <div key={indexitem} style={item.status === false ? { display: 'inline-block'}: {display: 'inline-block', opacity: 0}}>
-                                        <div style={{width: '62px', height: '62px'}}>
-                                            <button style={{border: '2px solid'}} onClick={() => this.changeStatusItem(arr, list ,item, index, indexitem)} disabled={item.status}>
-                                                <img style={{width: '47px', height: '54px'}} src={item.img} alt='error'/>
-                                            </button>
+                        {list.map((arr, index) => {
+                            return (
+                                <div key={index} className="row">
+                                {arr.map((item, indexitem) => {
+                                    if(checkReset === 'on')
+                                    return(
+                                        <div key={indexitem} style={item.status === false ? { display: 'inline-block'}: {display: 'inline-block', opacity: 0, transition: 'opacity 0.2s ease-in'}}>
+                                            <div style={{width: '62px', height: '62px'}}>
+                                                <button style={{border: '2px solid'}} onClick={() => this.changeStatusItem(arr, list ,item, index, indexitem)} disabled={item.status}>
+                                                    <img style={{width: '47px', height: '54px'}} src={item.img} alt='error'/>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                )})}
-                            </div>)
+                                    )})}
+                                </div>)
                     })}
                     </div>
                 </div>
@@ -113,7 +126,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         newState: (index, indexitem) => dispatch(action.changeStatusIcon(index, indexitem)),
         checkButtonClick: (arr, list, item, index, indexitem, point) => dispatch(action.checkButton(arr, list, item, index, indexitem, point)),
-        checkSwapArr: (list) => dispatch(action.swapArr(list)),
+        checkSwapArr : (list) => dispatch(action.swapArr(list)),
     };
 }
 
